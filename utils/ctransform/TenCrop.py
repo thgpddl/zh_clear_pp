@@ -6,10 +6,8 @@ class TenCrop(object):
         self.fivecrop = FiveCrop(size)
 
     def _hflip(self, img):
-        arr2 = img.reshape(int(img.size / 3), 3)
-        arr2 = np.array(arr2[::-1])
-        arr = arr2.reshape(img.shape[0], img.shape[1], img.shape[2])
-        return arr[::-1]
+        mirrow_img_y = img[:, ::-1]
+        return mirrow_img_y
 
     def __call__(self, image,force_apply=False):
         first_five = self.fivecrop(image=image)['image']

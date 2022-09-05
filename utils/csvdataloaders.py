@@ -106,15 +106,10 @@ def get_csvdataloaders(path=r'D:\WorkSpace\zh(v0)\dataset\fer2013.csv', bs=64,nu
             [Normalize(mean=[mu], std=[st], max_pixel_value=1)(image=crop)['image'] for crop in crops])),
         Lambda(lambda crops: np.stack([ToCHW()(image=crop)['image'] for crop in crops])),
     ])
-    # test_transform = Compose([
-    #     Grayscale(),
-    #     Normalize(mean=[mu], std=[st], max_pixel_value=1),
-    #     Normalize(mean=[mu], std=[st], max_pixel_value=1),
-    #     ToCHW()])
     if augment:
         train_transform = Compose([
             Grayscale(),
-            RandomResizedCrop(width=40, height=40, scale=(0.8, 1.2)),
+            RandomResizedCrop(width=48, height=48, scale=(0.8, 1.2)),
             ColorJitter(brightness=0.5, contrast=0.5, saturation=0.5, p=0.5),
             RandomAffine(rotate=0, translate_percent=(0.2, 0.2), p=0.5),  # TODO:Affine并非随机，而是固定值，可以尝试打包重写
             HorizontalFlip(p=0.5),
@@ -141,8 +136,9 @@ def get_csvdataloaders(path=r'D:\WorkSpace\zh(v0)\dataset\fer2013.csv', bs=64,nu
 
     return trainloader, valloader, testloader
 
+
 if __name__=="__main__":
-    train_loader, val_loader, test_loader = get_dataloaders(path=r"D:\WorkSpace\zh(v0)\dataset\fer2013.csv",
+    train_loader, val_loader, test_loader = get_csvdataloaders(path=r"D:\WorkSpace\zh(v0)\dataset\fer2013.csv",
                                                             bs=2,
                                                             num_workers=0,
                                                             augment=True)

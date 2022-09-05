@@ -3,7 +3,7 @@ epochs:
 
 batch_size: 256
 num_workers: 4
-data_path: /home/aistudio/fer2013.csv
+data_path: D:\WorkSpace\zh(v0)\dataset/fer2013.csv
 
 lr: 0.2
 momentum: 0.9
@@ -18,7 +18,7 @@ label_smooth_value: 0.1
 mixup: False
 mixup_alpha: 1.0
 
-Ncrop: True
+Ncrop: False
 
 outputs: ./outputs
 
