@@ -54,7 +54,10 @@ def main():
     print("device:", device)
     paddle.set_device(device)
 
-    train_loader, val_loader, test_loader=get_csvdataloaders(path="/home/aistudio/fer2013.csv",bs=config['batch_size'],num_workers=config['num_workers'],augment=True)
+    train_loader, val_loader, test_loader=get_csvdataloaders(path=config["data_path"],
+                                                             bs=config['batch_size'],
+                                                             num_workers=config['num_workers'],
+                                                             augment=True)
 
     model,net_path = get_model(arch=config['arch'])
     if cm:
