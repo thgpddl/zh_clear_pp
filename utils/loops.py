@@ -23,22 +23,22 @@ from utils.averagemeter import AverageMeter
 def train(model, train_loader, loss_fn, optimizer, device, scaler, config):
     model.train()
 
-    train_loss=AverageMeter()
-    train_acc=AverageMeter()
-    DataRead_Time=AverageMeter()
-    Epoch_Time=AverageMeter()
+    train_loss = AverageMeter()
+    train_acc = AverageMeter()
+    DataRead_Time = AverageMeter()
+    Epoch_Time = AverageMeter()
 
-    t1=time.time()
+    t1 = time.time()
     for i, data in enumerate(train_loader):
         images, labels = data
-        t2=time.time()
+        t2 = time.time()
 
         with auto_cast():
             if config['Ncrop']:
                 bs, ncrops, c, h, w = images.shape
-                images = images.reshape((-1,c,h,w))
+                images = images.reshape((-1, c, h, w))
                 # labels = torch.repeat_interleave(labels, repeats=ncrops, dim=0)
-                labels=paddle.repeat_interleave(labels, repeats=ncrops, axis=0)
+                labels = paddle.repeat_interleave(labels, repeats=ncrops, axis=0)
 
                 # from visual.input_tensor import show_images
                 # images=images.numpy().transpose(0,2,3,1)
@@ -85,16 +85,16 @@ def train(model, train_loader, loss_fn, optimizer, device, scaler, config):
             scaler.step(optimizer)
             scaler.update()
 
-            train_loss.update(loss,n=outputs.shape[0])
-            acc1,acc5=accuracy(outputs,labels,topk=(1,5))
-            train_acc.update(acc1,n=outputs.shape[0])
-            t3=time.time()
-            DataRead_Time.update(t2-t1)
-            Epoch_Time.update(t3-t1)
-            t1=time.time()
-    print("DataRead Time:{}\tTrainEpoch Time:{}".format(DataRead_Time.sum,Epoch_Time.sum))
+            train_loss.update(loss, n=outputs.shape[0])
+            acc1, acc5 = accuracy(outputs, labels, topk=(1, 5))
+            train_acc.update(acc1, n=outputs.shape[0])
+            t3 = time.time()
+            DataRead_Time.update(t2 - t1)
+            Epoch_Time.update(t3 - t1)
+            t1 = time.time()
+    print("DataRead Time:{}\tTrainEpoch Time:{}".format(DataRead_Time.sum, Epoch_Time.sum))
     # 在GPU上累计完后，再item，减少GPU与CPU的转移耗时
-    return train_loss.avg.item(),train_acc.avg.item()
+    return train_loss.avg.item(), train_acc.avg.item()
 
 
 def evaluate(model, val_loader, device, config):
@@ -107,7 +107,7 @@ def evaluate(model, val_loader, device, config):
             if config['Ncrop']:
                 # fuse crops and batchsize
                 bs, ncrops, c, h, w = images.shape
-                images = images.reshape((-1,c,h,w))
+                images = images.reshape((-1, c, h, w))
                 # labels = paddle.repeat_interleave(labels, repeats=ncrops, axis=0)
 
                 # from visual.input_tensor import show_images
@@ -131,7 +131,7 @@ def evaluate(model, val_loader, device, config):
             acc1, acc5 = accuracy(outputs, labels, topk=(1, 5))
             eval_acc.update(acc1, n=outputs.shape[0])
 
-        return eval_loss.avg.item(),eval_acc.avg.item()
+        return eval_loss.avg.item(), eval_acc.avg.item()
 
 
 def test(net, dataloader, Ncrop):

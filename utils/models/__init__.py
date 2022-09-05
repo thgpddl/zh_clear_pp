@@ -10,4 +10,5 @@
 # TODO：新增mdoel时，需要在这里导入并在arch中添加
 
 from .unresnet18 import UnResNet18
+from .ResNet import ResNet18,ResNet34
 
