@@ -1,0 +1,3 @@
+clearml
+albumentations
+opencv-python==3.4.10.35
