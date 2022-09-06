@@ -5,7 +5,6 @@ import datetime
 import paddle
 from paddle.amp import GradScaler
 
-
 from clearml import Task, Logger
 
 import os
@@ -28,7 +27,8 @@ parser.add_argument('--arch', type=str, required=True)
 parser.add_argument('--epochs', default=300, type=int)
 
 # clearml
-cm= False
+cm = False
+
 
 def main():
     # 获取配置信息
@@ -54,16 +54,15 @@ def main():
     print("device:", device)
     paddle.set_device(device)
 
-    train_loader, val_loader, test_loader=get_csvdataloaders(path=config["data_path"],
-                                                             bs=config['batch_size'],
-                                                             num_workers=config['num_workers'],
-                                                             augment=True)
+    train_loader, val_loader, test_loader = get_csvdataloaders(path=config["data_path"],
+                                                               bs=config['batch_size'],
+                                                               num_workers=config['num_workers'],
+                                                               augment=True)
 
-    model,net_path = get_model(arch=config['arch'])
+    model, net_path = get_model(arch=config['arch'])
     if cm:
-        task.upload_artifact(name="net path",artifact_object=net_path)  # 记录定义net的py文件
+        task.upload_artifact(name="net path", artifact_object=net_path)  # 记录定义net的py文件
     model = model.to(device)
-
 
     # # amp
     scaler = GradScaler()
@@ -101,7 +100,7 @@ def main():
             best_acc = max(val_acc, best_acc)
             if cm:
                 logger.report_scalar(title='Best Accuracy', series="Val", value=best_acc, iteration=epoch)
-            best_checkpoint_filename = os.path.join(checkpoint_path,'best_checkpoint.tar')
+            best_checkpoint_filename = os.path.join(checkpoint_path, 'best_checkpoint.tar')
             state_dict = {'epoch': epoch,
                           'model_state_dict': model.state_dict(),
                           'opt_state_dict': optimizer.state_dict()}
@@ -121,7 +120,9 @@ def main():
     print("--------------------------------------------------------")
     model, _ = load_checkpoint(best_checkpoint_filename, model, optimizer)
     print("加载best_checkpoint成功：%s" % best_checkpoint_filename)
-    test(model, test_loader, config['Ncrop'])
+    acc = test(model, test_loader, config['Ncrop'])
+    if cm:
+        task.connect({"Test Acc": acc})
 
 
 if __name__ == '__main__':

@@ -175,3 +175,4 @@ def test(net, dataloader, Ncrop):
     print("Recall: %2.6f" % recall_score(y_gt, y_pred, average='micro'))
     print("F1 Score: %2.6f" % f1_score(y_gt, y_pred, average='micro'))
     print("Confusion Matrix:\n%s\n" % confusion_mat)
+    return acc

@@ -1,24 +1,24 @@
 arch:
 epochs:
 
-batch_size: 256
+batch_size: 128
 num_workers: 4
 data_path: D:\WorkSpace\zh(v0)\dataset/fer2013.csv
 
-lr: 0.2
+lr: 0.1
 momentum: 0.9
 weight_decay: 0.0001
 
 opti: SGD
 scheduler: reduce
 
-label_smooth: False
+label_smooth: True
 label_smooth_value: 0.1
 
-mixup: False
+mixup: True
 mixup_alpha: 1.0
 
-Ncrop: False
+Ncrop: True
 
 outputs: ./outputs
 
