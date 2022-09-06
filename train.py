@@ -93,6 +93,8 @@ def main():
             logger.report_scalar(title='Loss', series='Val', value=val_loss, iteration=epoch)
             logger.report_scalar(title='Accuracy', series='Train', value=train_acc, iteration=epoch)
             logger.report_scalar(title='Accuracy', series='Val', value=val_acc, iteration=epoch)
+            lr = optimizer.state_dict()['param_groups'][0]['lr']
+            logger.report_scalar(title='lr', series='epoch', value=lr, iteration=epoch)
 
         # 当前最好
         note = ""
