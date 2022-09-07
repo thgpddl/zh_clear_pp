@@ -65,7 +65,7 @@ class FerNet(nn.Layer):
         )
 
     def forward(self, x):  # output shape:
-        x = self.head(x)  # 1,64,40,40
+        x = F.relu(self.head(x))  # 1,64,40,40
         x = self.block1(x)  # 1,64,40,40
         x = self.translayer1(x)  # 1,128,20,20
         x = self.block2(x)  # 1,128,20,20

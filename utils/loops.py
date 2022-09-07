@@ -169,7 +169,7 @@ def test(net, dataloader, Ncrop):
             y_gt.extend(y.item() for y in labels)
 
     acc = 100 * correct / n_samples
-    confusion_mat = confusion_matrix(y_gt, y_pred)
+    confusion_mat = confusion_matrix(y_gt, y_pred, normalize='true')
     print("Top 1 Accuracy: %2.6f %%" % acc)
     print("Precision: %2.6f" % precision_score(y_gt, y_pred, average='micro'))
     print("Recall: %2.6f" % recall_score(y_gt, y_pred, average='micro'))
