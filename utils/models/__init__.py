@@ -15,4 +15,4 @@ from .fernet import FerNet
 from .fernet_doublebranch import FerNet_DoubleBranch
 from .fernet_GAP import FerNet_GAP
 from .fernet_resnetblock import FerNet_resblock
-
+from .fernet_updimblock import FerNet_updimblock

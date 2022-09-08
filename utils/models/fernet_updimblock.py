@@ -10,43 +10,31 @@ class Block(nn.Layer):
 
     def __init__(self, input_channel):
         super(Block, self).__init__()
+        self.updim=nn.Sequential(
+            nn.Conv2D(input_channel,input_channel*2,1,bias_attr=False),
+            nn.BatchNorm2D(input_channel*2)
+        )
         self.conv1 = nn.Sequential(
-            nn.Conv2D(input_channel, input_channel, 3, padding=1, bias_attr=False),
-            nn.BatchNorm2D(input_channel)
+            nn.Conv2D(input_channel*2, input_channel*2, 3, padding=1, bias_attr=False),
+            nn.BatchNorm2D(input_channel*2)
         )
         self.conv2 = nn.Sequential(
-            nn.Conv2D(input_channel, input_channel, 3, padding=1, bias_attr=False),
+            nn.Conv2D(input_channel*2, input_channel*2, 3, padding=1, bias_attr=False),
+            nn.BatchNorm2D(input_channel*2)
+        )
+        self.downdim = nn.Sequential(
+            nn.Conv2D(input_channel*2, input_channel, 1, bias_attr=False),
             nn.BatchNorm2D(input_channel)
         )
 
     def forward(self, x):
+        identity = x
+        x = F.relu(self.updim(x))
         x = F.relu(self.conv1(x))
-        output = F.relu(self.conv2(x))
+        x = F.relu(self.conv2(x))
+        x = self.downdim(x)
+        output = F.relu(identity+x)
         return output
-
-
-class ResBlock(nn.Layer):
-    """
-    输入shape和输出shape一致
-    """
-
-    def __init__(self, input_channel):
-        super(ResBlock, self).__init__()
-        self.conv1 = nn.Sequential(
-            nn.Conv2D(input_channel, input_channel, 3, padding=1, bias_attr=False),
-            nn.BatchNorm2D(input_channel)
-        )
-        self.conv2 = nn.Sequential(
-            nn.Conv2D(input_channel, input_channel, 3, padding=1, bias_attr=False),
-            nn.BatchNorm2D(input_channel)
-        )
-
-    def forward(self, x):
-        identity=x
-        x = F.relu(self.conv1(x))
-        output = F.relu(identity+self.conv2(x))
-        return output
-
 
 class TransLayer(nn.Layer):
     "通道翻倍，size减半"
@@ -63,20 +51,20 @@ class TransLayer(nn.Layer):
         return output
 
 
-class FerNet_resblock(nn.Layer):
+class FerNet_updimblock(nn.Layer):
     def __init__(self):
-        super(FerNet_resblock, self).__init__()
+        super(FerNet_updimblock, self).__init__()
         self.head = nn.Sequential(
             nn.Conv2D(in_channels=1, out_channels=64, kernel_size=3, stride=1, padding=1, bias_attr=False),
             nn.BatchNorm2D(64)
         )
-        self.block1 = ResBlock(input_channel=64)
+        self.block1 = Block(input_channel=64)
         self.translayer1 = TransLayer(input_channel=64)
-        self.block2 = ResBlock(input_channel=128)
+        self.block2 = Block(input_channel=128)
         self.translayer2 = TransLayer(input_channel=128)
-        self.block3 = ResBlock(input_channel=256)
+        self.block3 = Block(input_channel=256)
         self.translayer3 = TransLayer(input_channel=256)
-        self.block4 = ResBlock(input_channel=512)
+        self.block4 = Block(input_channel=512)
         self.translayer4 = TransLayer(input_channel=512)  # shape=(1024,2,2)
 
         self.avg = nn.AdaptiveAvgPool2D((1, 1))
@@ -105,5 +93,5 @@ class FerNet_resblock(nn.Layer):
 if __name__ == "__main__":
     from paddle import summary
 
-    net = FerNet_resblock()
+    net = FerNet_updimblock()
     summary(net, input_size=(1, 1, 40, 40))
