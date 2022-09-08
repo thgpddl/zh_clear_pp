@@ -13,4 +13,5 @@ from .unresnet18 import UnResNet18
 from .ResNet import ResNet18,ResNet34
 from .fernet import FerNet
 from .fernet_doublebranch import FerNet_DoubleBranch
+from .fernet_GAP import FerNet_GAP
 
