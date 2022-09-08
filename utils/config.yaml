@@ -3,19 +3,19 @@ epochs:
 
 batch_size: 128
 num_workers: 4
-data_path: D:\WorkSpace\zh(v0)\dataset/fer2013.csv
+data_path: /home/aistudio/fer2013.csv
 
-lr: 0.1
+lr: 0.01
 momentum: 0.9
 weight_decay: 0.0001
 
 opti: SGD
 scheduler: reduce
 
-label_smooth: True
+label_smooth: False
 label_smooth_value: 0.1
 
-mixup: True
+mixup: False
 mixup_alpha: 1.0
 
 Ncrop: True
