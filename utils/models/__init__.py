@@ -17,3 +17,4 @@ from .fernet_GAP import FerNet_GAP
 from .fernet_resnetblock import FerNet_resblock
 from .fernet_updimblock import FerNet_updimblock
 from .fernet_db_GAP_resnetblock import FerNet_db_GAP_resnetblock
+from .fernet_db_resnetblock import FerNet_db_resnetblock
