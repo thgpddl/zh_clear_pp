@@ -7,6 +7,7 @@ import paddle
 import paddle.nn.functional as F
 
 import yaml
+import argparse
 
 
 def cross_entropy(outputs, smooth_labels):
@@ -125,21 +126,40 @@ def load_checkpoint(path, model, optimizer):
     return model, optimizer
 
 
-def load_yaml(path, args):
-    try:
-        f = open(path)
-        y = yaml.load(f, Loader=yaml.FullLoader)
-    except UnicodeDecodeError as result:
-        f = open(path, encoding='utf-8')
-        y = yaml.load(f, Loader=yaml.FullLoader)
+def get_args():
+    parser = argparse.ArgumentParser(description='EFR Project')
+    parser.add_argument('--name', required=True, type=str)      # flag
+    parser.add_argument('--arch', required=True, type=str)      # flag
+    parser.add_argument('--epochs', default=200, type=int)
+    parser.add_argument('--cm', default=True, type=eval)        # flag
 
-    # 每次都需要一个版本名字
-    y['name'] = args.name
-    y['arch'] = args.arch
+    parser.add_argument('--taskproject', default="BML-Fer2013-FerNet", type=str)  # flag
 
-    y['epochs'] = args.epochs
+    parser.add_argument('--batch_size', default=128, type=int)
+    parser.add_argument('--num_workers', default=4, type=int)
+    parser.add_argument('--data_path', default='/home/aistudio/fer2013.csv', type=str)
 
-    return y
+    parser.add_argument('--lr', default=0.1, type=float)        # flag
+    parser.add_argument('--momentum', default=0.9, type=float)
+    parser.add_argument('--weight_decay', default=1e-4, type=float)
+
+    parser.add_argument('--opti', default="SGD", type=str)
+    parser.add_argument('--scheduler', default="reduce", type=str, help='[reduce, cos]')
+
+    parser.add_argument('--label_smooth', default=False, type=eval)
+    parser.add_argument('--label_smooth_value', default=0.1, type=float)
+
+    parser.add_argument('--mixup', default=False, type=eval)
+    parser.add_argument('--mixup_alpha', default=1.0, type=float)
+
+    parser.add_argument('--Ncrop', default=True, type=eval)
+
+    parser.add_argument('--outputs', default='./outputs', type=str)
+    parser.add_argument('--resume_path', default="", type=str)
+    parser.add_argument('--seed', default=0, type=int)
+
+    return parser.parse_args()
+
 
 def accuracy(output, target, topk=(1,)):
     """

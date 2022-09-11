@@ -25,3 +25,4 @@ from .fernet_updimblock_notRes import FerNet_updimblock_notRes
 from .fernet_db_updimblock_notRes import FerNet_db_updimblock_notRes
 
 from .fernet_db_updimblock import FerNet_db_updimblock
+from .experiment import Experiment

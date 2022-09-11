@@ -20,7 +20,7 @@ from utils.utils import (mixup_criterion, mixup_data, smooth_one_hot, accuracy)
 from utils.averagemeter import AverageMeter
 
 
-def train(model, train_loader, loss_fn, optimizer, device, scaler, config):
+def train(model, train_loader, loss_fn, optimizer, scaler, config):
     model.train()
 
     train_loss = AverageMeter()
@@ -34,7 +34,7 @@ def train(model, train_loader, loss_fn, optimizer, device, scaler, config):
         t2 = time.time()
 
         with auto_cast():
-            if config['Ncrop']:
+            if config.Ncrop:
                 bs, ncrops, c, h, w = images.shape
                 images = images.reshape((-1, c, h, w))
                 # labels = torch.repeat_interleave(labels, repeats=ncrops, dim=0)
@@ -45,29 +45,29 @@ def train(model, train_loader, loss_fn, optimizer, device, scaler, config):
                 # print(labels)
                 # show_images(image_batch=images,bs=bs*ncrops,gray=True)
 
-            if config['mixup']:
+            if config.mixup:
                 images, labels_a, labels_b, lam = mixup_data(
-                    images, labels, config['mixup_alpha'])
+                    images, labels, config.mixup_alpha)
                 # images, labels_a, labels_b = map(Variable, (images, labels_a, labels_b))
 
             outputs = model(images)
 
-            if config['label_smooth']:
-                if config['mixup']:
+            if config.label_smooth:
+                if config.mixup:
                     # mixup + label smooth
                     soft_labels_a = smooth_one_hot(
-                        labels_a, classes=7, smoothing=config['label_smooth_value'])
+                        labels_a, classes=7, smoothing=config.label_smooth_value)
                     soft_labels_b = smooth_one_hot(
-                        labels_b, classes=7, smoothing=config['label_smooth_value'])
+                        labels_b, classes=7, smoothing=config.label_smooth_value)
                     loss = mixup_criterion(
                         loss_fn, outputs, soft_labels_a, soft_labels_b, lam)
                 else:
                     # label smoorth
                     soft_labels = smooth_one_hot(
-                        labels, classes=7, smoothing=config['label_smooth_value'])
+                        labels, classes=7, smoothing=config.label_smooth_value)
                     loss = loss_fn(outputs, soft_labels)
             else:
-                if config['mixup']:
+                if config.mixup:
                     # mixup
                     loss = mixup_criterion(
                         loss_fn, outputs, labels_a, labels_b, lam)
@@ -97,14 +97,14 @@ def train(model, train_loader, loss_fn, optimizer, device, scaler, config):
     return train_loss.avg.item(), train_acc.avg.item()
 
 
-def evaluate(model, val_loader, device, config):
+def evaluate(model, val_loader, config):
     model.eval()
     eval_loss = AverageMeter()
     eval_acc = AverageMeter()
     with paddle.no_grad():
         for i, data in enumerate(val_loader):
             images, labels = data
-            if config['Ncrop']:
+            if config.Ncrop:
                 # fuse crops and batchsize
                 bs, ncrops, c, h, w = images.shape
                 images = images.reshape((-1, c, h, w))

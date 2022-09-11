@@ -8,6 +8,6 @@ def visual_net(net, input=paddle.ones([1, 1, 40, 40])):
     netron.start("test.onnx")
 
 
-from utils.models import FerNet_db_updimblock
-net=FerNet_db_updimblock()
+from utils.models import Experiment
+net=Experiment()
 visual_net(net)
