@@ -16,8 +16,8 @@ fi
 #   修改config文件
 #   第一步先测试epoch=2能否正常运行
 
-python -u train.py --name=baseline+alignment --arch= --epochs=5
-python -u train.py --name=test --arch= --epochs=2 # 似乎没区别，pytorch有区别吗
-python -u train.py --name= --arch= --epochs=${epoch} # 似乎没区别，pytorch有区别吗
+python train.py --name=baseline+alignment --arch=FerNet --epochs=5 --lr=0.1
+python train.py --name=test --arch= --epochs=2 --lr=0.1 --cm=False # 似乎没区别，pytorch有区别吗
+python train.py --name= --arch= --epochs=${epoch} # 似乎没区别，pytorch有区别吗
 
 # python train.py --name=UnResNet18-Without-AMP --arch=UnResNet18 --epochs=${epoch}
