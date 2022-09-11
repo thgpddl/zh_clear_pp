@@ -23,4 +23,5 @@ from .fernet_GAP_resnetblock import FerNet_GAP_resnetblock
 from .fernet_db_notresnetblock import FerNet_db_notresnetblock
 from .fernet_updimblock_notRes import FerNet_updimblock_notRes
 from .fernet_db_updimblock_notRes import FerNet_db_updimblock_notRes
+
 from .fernet_db_updimblock import FerNet_db_updimblock
